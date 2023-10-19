@@ -1,4 +1,4 @@
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 
 const express = require('express');
 const cors = require('cors');
@@ -40,6 +40,13 @@ async function run() {
       res.send(result);
     })
 
+    app.get('/product/:id', async(req, res)=>{
+      const id = req.params.id;
+      const query = {_id: new ObjectId(id)};
+      const product = await productCollection.findOne(query);
+      res.send(product);
+    })
+
     app.post('/product', async(req, res)=>{
         const product = req.body;
         console.log(product);
@@ -54,7 +61,31 @@ async function run() {
       const result = await addcartCollection.insertOne(product)
       res.send(result)
       
-  })
+    })
+
+    app.put('/product/:id', async(req, res)=>{
+      const id = req.params.id;
+      const updateProduct = req.body;
+      const filter = {_id: new ObjectId(id)};
+      const options = {upsert: true};
+      const product = {
+        $set:{
+          image: updateProduct.image, 
+          brand: updateProduct.brand, 
+          name: updateProduct.name, 
+          type: updateProduct.type, 
+          price: updateProduct.price, 
+          description: updateProduct.description, 
+          rating: updateProduct.rating,
+        }
+      }
+      const result = await productCollection.updateOne(filter, product, options);
+
+      res.send(result);
+    })
+
+
+
 
 
 
