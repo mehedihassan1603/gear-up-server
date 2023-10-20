@@ -21,7 +21,7 @@ const client = new MongoClient(uri, {
 
 async function run() {
   try {
-    await client.connect();
+    
 
     const productCollection = client.db('productDB').collection('product');
     const addcartCollection = client.db('productDB').collection('addcart');
